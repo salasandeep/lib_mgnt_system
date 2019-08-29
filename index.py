@@ -16,6 +16,7 @@ class Login(QWidget, login):
     def __init__(self):
         QWidget.__init__(self)
         self.setupUi(self)
+        self.createdb()
         self.handle_buttn()
         self.groupBox_2.hide()
 
@@ -23,6 +24,20 @@ class Login(QWidget, login):
         self.pushButton_4.clicked.connect(self.signup_user)
         self.pushButton.clicked.connect(self.login_user)
         self.pushButton_2.clicked.connect(self.handle_signup)
+    
+    def createdb(self):
+        self.db = sqlite3.connect('lib.db')
+        if self.db == False:
+            self.cur = self.db.cursor()
+            self.cur.execute('CREATE TABLE IF NOT EXISTS users(user_email TEXT NOT NULL,user_name TEXT NOT NULL,user_password TEXT NOT NULL,user_number TEXT NOT NULL)')
+            self.cur.execute('CREATE TABLE IF NOT EXISTS student(rollno TEXT NOT NULL UNIQUE,name TEXT NOT NULL,address TEXT NOT NULL,num TEXT NOT NULL)')
+            self.cur.execute('CREATE TABLE IF NOT EXISTS category(cat_name TEXT NOT NULL UNIQUE)')
+            self.cur.execute('CREATE TABLE IF NOT EXISTS Authors(author_name TEXT NOT NULL UNIQUE)')
+            self.cur.execute('CREATE TABLE IF NOT EXISTS publisher(pub_name TEXT NOT NULL UNIQUE)')
+            self.cur.execute('CREATE TABLE IF NOT EXISTS openn(name TEXT NOT NULL ,student TEXT NOT NULL,type TEXT NOT NULL,fro TEXT NOT NULL,tom TEXT NOT NULL)')
+            self.cur.execute('CREATE TABLE IF NOT EXISTS book(book_name TEXT NOT NULL,book_disc TEXT NOT NULL,book_code TEXT NOT NULL,book_category TEXT NOT NULL,book_author TEXT NOT NULL,book_pub TEXT NOT NULL,book_price TEXT NOT NULL)')
+            self.db.commit()
+            self.db.close()
 
     def handle_signup(self):
         self.groupBox.hide()
